@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Naviquo | Navigate. Communicate. Belong.</title>
+
+  <meta
+    name="description"
+    content="Naviquo is the global social platform built for cruise crew."
+  >
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top right, #0877ff 0%, transparent 35%),
+        radial-gradient(circle at bottom left, #00cfc8 0%, transparent 30%),
+        #020b24;
+      color: white;
+      min-height: 100vh;
+    }
+
+    nav {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 3px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      font-weight: bold;
+      background: linear-gradient(135deg, #006eff, #00d4c8);
+      box-shadow: 0 10px 30px rgba(0, 166, 255, 0.35);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 30px;
+      padding: 10px 18px;
+      font-size: 14px;
+    }
+
+    main {
+      min-height: calc(100vh - 160px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    .content {
+      max-width: 850px;
+    }
+
+    .badge {
+      display: inline-block;
+      margin-bottom: 28px;
+      padding: 9px 16px;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 30px;
+      background: rgba(255,255,255,0.08);
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: clamp(48px, 10vw, 96px);
+      line-height: 1;
+      margin-bottom: 24px;
+      letter-spacing: -3px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #ffffff, #5be7ff, #00d4c8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+      font-size: clamp(24px, 5vw, 42px);
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .description {
+      max-width: 650px;
+      margin: 0 auto 36px;
+      color: #c7d4ef;
+      font-size: 19px;
+      line-height: 1.7;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 15px 24px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .primary {
+      color: #00112c;
+      background: linear-gradient(90deg, #54e9ff, #00d4c8);
+      box-shadow: 0 12px 35px rgba(0, 212, 200, 0.28);
+    }
+
+    .secondary {
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .features {
+      max-width: 1000px;
+      margin: 20px auto 80px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .feature {
+      padding: 28px;
+      border-radius: 22px;
+      text-align: center;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(12px);
+    }
+
+    .feature h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    .feature p {
+      color: #b9c9e7;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #8fa3c7;
+      font-size: 14px;
+    }
+
+    footer a {
+      color: #57e7ec;
+      text-decoration: none;
+    }
+
+    @media (max-width: 750px) {
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      nav {
+        padding: 18px;
+      }
+
+      nav a {
+        display: none;
+      }
+
+      h1 {
+        letter-spacing: -1px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="brand">
+      <div class="logo">N</div>
+      NAVIQUO
+    </div>
+
+    <a href="mailto:tormoor@naviquo.com">Contact</a>
+  </nav>
+
+  <main>
+    <section class="content">
+      <div class="badge">THE GLOBAL COMMUNITY FOR CRUISE CREW</div>
+
+      <h1 class="gradient-text">Naviquo</h1>
+
+      <p class="tagline">
+        Navigate. Communicate. Belong.
+      </p>
+
+      <p class="description">
+        A new social platform built for cruise crew around the world.
+        Connect with friends, discover opportunities, explore ports
+        and stay connected wherever your next contract takes you.
+      </p>
+
+      <div class="buttons">
+        <a class="button primary" href="mailto:tormoor@naviquo.com">
+          Join the Journey
+        </a>
+
+        <a class="button secondary" href="#features">
+          Discover Naviquo
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <section class="features" id="features">
+    <div class="feature">
+      <h2>Connect Worldwide</h2>
+      <p>
+        Find and reconnect with crew members across ships,
+        companies and countries.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h2>Discover Opportunities</h2>
+      <p>
+        Explore jobs, contracts, accommodation and useful
+        services for life at sea.
+      </p>
+    </div>
+
+    <div class="feature">
+      <h2>Explore Together</h2>
+      <p>
+        Share experiences, discover ports and build a global
+        community that travels with you.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <p>
+      Contact:
+      <a href="mailto:tormoor@naviquo.com">
+        tormoor@naviquo.com
+      </a>
+    </p>
+
+    <br>
+
+    <p>© 2026 Naviquo. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
