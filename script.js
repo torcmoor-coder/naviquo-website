@@ -3,7 +3,7 @@
   Replace the placeholder below with the Web App URL produced by Google Apps Script.
   It should end in /exec.
 */
-const GOOGLE_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhCqgxwy4tYcHws48zUO9AABZORUhbt2UAoTilWlgcJDyXVW0PioAecRX8LzL9VwOG/exec";
 
 const menuButton = document.querySelector(".menu-toggle");
 if (menuButton) {
