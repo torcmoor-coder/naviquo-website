@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Naviquo Admin</title>
+  <link rel="icon" type="image/png" href="../Logo.png">
+  <link rel="stylesheet" href="admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <main id="loginView" class="login-shell">
+    <section class="login-card">
+      <div class="brand-lockup">
+        <img src="../Logo.png" alt="Naviquo" class="login-logo">
+        <div>
+          <p class="eyebrow">PRIVATE ADMIN</p>
+          <h1>Naviquo</h1>
+        </div>
+      </div>
+
+      <h2>Founder sign in</h2>
+      <p class="muted">Sign in with your approved Naviquo administrator account.</p>
+
+      <form id="loginForm" class="login-form">
+        <label>
+          Email address
+          <input id="loginEmail" type="email" autocomplete="email" required>
+        </label>
+        <label>
+          Password
+          <input id="loginPassword" type="password" autocomplete="current-password" required minlength="8">
+        </label>
+        <button id="loginButton" class="button primary" type="submit">Sign in</button>
+      </form>
+
+      <p id="loginError" class="form-error" hidden></p>
+      <a class="back-link" href="../index.html">← Return to Naviquo</a>
+    </section>
+  </main>
+
+  <div id="appView" class="app-shell" hidden>
+    <aside class="sidebar">
+      <a href="../index.html" class="sidebar-brand">
+        <img src="../Logo.png" alt="" class="sidebar-logo">
+        <span>NAVIQUO</span>
+      </a>
+
+      <nav class="side-nav" aria-label="Admin navigation">
+        <button class="nav-item active" data-view="overview">Overview</button>
+        <button class="nav-item" data-view="responses">Responses</button>
+        <button class="nav-item" data-view="beta">Beta testers</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <p id="signedInAs" class="signed-in"></p>
+        <button id="signOutButton" class="button ghost full">Sign out</button>
+      </div>
+    </aside>
+
+    <section class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">RESEARCH CONTROL CENTRE</p>
+          <h1 id="pageTitle">Overview</h1>
+        </div>
+        <div class="top-actions">
+          <span id="lastUpdated" class="last-updated">Not refreshed yet</span>
+          <button id="refreshButton" class="button secondary">Refresh</button>
+          <button id="exportButton" class="button primary">Export CSV</button>
+        </div>
+      </header>
+
+      <section id="overviewView" class="view-panel">
+        <div class="kpi-grid">
+          <article class="kpi-card"><span>Total responses</span><strong id="totalResponses">0</strong><small>Research submissions</small></article>
+          <article class="kpi-card"><span>Cruise lines</span><strong id="cruiseLines">0</strong><small>Represented</small></article>
+          <article class="kpi-card"><span>Departments</span><strong id="departments">0</strong><small>Represented</small></article>
+          <article class="kpi-card"><span>Beta testers</span><strong id="betaTesters">0</strong><small>Interested in testing</small></article>
+          <article class="kpi-card"><span>Marketing opt-ins</span><strong id="marketingOptIns">0</strong><small>Can receive updates</small></article>
+        </div>
+
+        <div class="chart-grid">
+          <article class="panel"><div class="panel-head"><h2>Responses by cruise line</h2></div><div class="chart-wrap"><canvas id="cruiseChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><h2>Responses by department</h2></div><div class="chart-wrap"><canvas id="departmentChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><h2>Experience at sea</h2></div><div class="chart-wrap"><canvas id="experienceChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><h2>Most requested features</h2></div><div class="chart-wrap"><canvas id="featureChart"></canvas></div></article>
+        </div>
+
+        <article class="panel">
+          <div class="panel-head"><h2>Latest feedback</h2><button class="text-button" data-view-jump="responses">View all</button></div>
+          <div id="latestFeedback" class="feedback-list"></div>
+        </article>
+      </section>
+
+      <section id="responsesView" class="view-panel" hidden>
+        <article class="panel">
+          <div class="filter-bar">
+            <input id="searchInput" type="search" placeholder="Search responses…">
+            <select id="cruiseFilter"><option value="">All cruise lines</option></select>
+            <select id="departmentFilter"><option value="">All departments</option></select>
+            <button id="clearFilters" class="button ghost">Clear</button>
+          </div>
+          <p id="responseCount" class="result-count"></p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Date</th><th>Name</th><th>Email</th><th>Cruise line</th><th>Department</th><th>Position</th>
+                <th>Years at sea</th><th>Features</th><th>Biggest frustration</th><th>Day-one feature</th>
+                <th>Weekly feature</th><th>Other ideas</th><th>Beta</th><th>Marketing</th>
+              </tr></thead>
+              <tbody id="responsesBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section id="betaView" class="view-panel" hidden>
+        <div class="kpi-grid compact">
+          <article class="kpi-card"><span>Eligible beta testers</span><strong id="betaCountLarge">0</strong><small>Marked yes</small></article>
+          <article class="kpi-card"><span>With email address</span><strong id="betaWithEmail">0</strong><small>Ready to contact</small></article>
+        </div>
+        <article class="panel">
+          <div class="panel-head"><h2>Beta tester list</h2><button id="exportBetaButton" class="button secondary">Export beta CSV</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Cruise line</th><th>Department</th><th>Position</th><th>Features wanted</th></tr></thead>
+              <tbody id="betaBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </section>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
