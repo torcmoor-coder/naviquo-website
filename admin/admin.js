@@ -289,11 +289,57 @@
         <td>${escapeHtml(row.other_ideas)}</td>
         <td>${yesPill(row.beta_tester)}</td>
         <td>${yesPill(row.marketing_consent)}</td>
-        <td>${escapeHtml(row.status || "New")}</td>
+        <td>
+  <select class="status-select" data-id="${row.id}">
+    <option value="New" ${row.status === "New" || !row.status ? "selected" : ""}>New</option>
+    <option value="Reviewed" ${row.status === "Reviewed" ? "selected" : ""}>Reviewed</option>
+    <option value="Contacted" ${row.status === "Contacted" ? "selected" : ""}>Contacted</option>
+    <option value="Beta Tester" ${row.status === "Beta Tester" ? "selected" : ""}>Beta Tester</option>
+    <option value="Ambassador" ${row.status === "Ambassador" ? "selected" : ""}>Ambassador</option>
+  </select>
+</td>
+
       </tr>
     `).join("");
   }
+$("responsesBody").addEventListener("change", async (event) => {
+  const select = event.target.closest(".status-select");
 
+  if (!select) return;
+
+  const id = select.dataset.id;
+  const status = select.value;
+  const previousStatus =
+    allResponses.find((row) => String(row.id) === String(id))?.status || "New";
+
+  select.disabled = true;
+
+  const { error } = await supabase
+    .from("research_responses")
+    .update({
+      status,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  select.disabled = false;
+
+  if (error) {
+    select.value = previousStatus;
+    alert("Failed to update status.");
+    console.error("Status update failed:", error);
+    return;
+  }
+
+  const response = allResponses.find(
+    (row) => String(row.id) === String(id)
+  );
+
+  if (response) {
+    response.status = status;
+  }
+});
+  
   function renderBetaTable() {
     const rows = betaRows();
     $("betaBody").innerHTML = rows.map(row => `
