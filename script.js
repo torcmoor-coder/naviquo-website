@@ -99,13 +99,20 @@ if (form) {
           continue;
         }
 
-        responseData[camelToSnake(name)] =
-          typeof value === "string" ? value.trim() : value;
+        const columnName =
+  name === "otherSuggestions"
+    ? "other_ideas"
+    : camelToSnake(name);
+
+responseData[columnName] =
+  typeof value === "string" ? value.trim() : value;
       }
 
-      responseData.features = [
-        ...form.querySelectorAll('input[name="features"]:checked')
-      ].map((input) => input.value);
+     responseData.features = [
+  ...form.querySelectorAll('input[name="features"]:checked')
+]
+  .map((input) => input.value)
+  .join(", ");
 
       responseData.research_consent = Boolean(
         form.querySelector('[name="researchConsent"]')?.checked
