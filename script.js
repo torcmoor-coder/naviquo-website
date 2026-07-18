@@ -108,11 +108,9 @@ responseData[columnName] =
   typeof value === "string" ? value.trim() : value;
       }
 
-     responseData.features = [
+   responseData.features = [
   ...form.querySelectorAll('input[name="features"]:checked')
-]
-  .map((input) => input.value)
-  .join(", ");
+].map((input) => input.value);
 
       responseData.research_consent = Boolean(
         form.querySelector('[name="researchConsent"]')?.checked
