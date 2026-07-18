@@ -296,7 +296,17 @@
     <option value="Contacted" ${row.status === "Contacted" ? "selected" : ""}>Contacted</option>
     <option value="Beta Tester" ${row.status === "Beta Tester" ? "selected" : ""}>Beta Tester</option>
     <option value="Ambassador" ${row.status === "Ambassador" ? "selected" : ""}>Ambassador</option>
+
   </select>
+</td>
+
+<td>
+  <textarea
+    class="admin-note"
+    data-id="${row.id}"
+    rows="2"
+    placeholder="Add note..."
+  >${escapeHtml(row.admin_notes || "")}</textarea>
 </td>
 
       </tr>
@@ -339,6 +349,24 @@ $("responsesBody").addEventListener("change", async (event) => {
     response.status = status;
   }
 });
+
+document.querySelector("#responsesBody").addEventListener("blur", async (event) => {
+  const note = event.target.closest(".admin-note");
+  if (!note) return;
+
+  const id = note.dataset.id;
+  const admin_notes = note.value;
+
+  const { error } = await supabase
+    .from("research_responses")
+    .update({ admin_notes })
+    .eq("id", id);
+
+  if (error) {
+    alert("Failed to save note.");
+    console.error(error);
+  }
+}, true);
   
   function renderBetaTable() {
     const rows = betaRows();
