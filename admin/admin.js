@@ -289,6 +289,7 @@
         <td>${escapeHtml(row.other_ideas)}</td>
         <td>${yesPill(row.beta_tester)}</td>
         <td>${yesPill(row.marketing_consent)}</td>
+        <td>${escapeHtml(row.status || "New")}</td>
       </tr>
     `).join("");
   }
