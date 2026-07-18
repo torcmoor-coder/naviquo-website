@@ -1,11 +1,21 @@
-/*
-  NAVIQUO GOOGLE SHEETS SETUP
-  Replace the placeholder below with the Web App URL produced by Google Apps Script.
-  It should end in /exec.
-*/
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhCqgxwy4tYcHws48zUO9AABZORUhbt2UAoTilWlgcJDyXVW0PioAecRX8LzL9VwOG/exec";
+const config = window.NAVIQUO_CONFIG;
+
+if (
+  !config ||
+  !config.SUPABASE_URL ||
+  !config.SUPABASE_ANON_KEY ||
+  !window.supabase
+) {
+  console.error("Supabase configuration is missing.");
+}
+
+const supabaseClient = window.supabase.createClient(
+  config.SUPABASE_URL,
+  config.SUPABASE_ANON_KEY
+);
 
 const menuButton = document.querySelector(".menu-toggle");
+
 if (menuButton) {
   menuButton.addEventListener("click", () => {
     const open = document.body.classList.toggle("menu-open");
@@ -32,15 +42,29 @@ const revealObserver = new IntersectionObserver(
   { threshold: 0.12 }
 );
 
-document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+document
+  .querySelectorAll(".reveal")
+  .forEach((element) => revealObserver.observe(element));
 
 const form = document.getElementById("researchForm");
 const statusBox = document.getElementById("formStatus");
 
 function showStatus(message, type) {
+  if (!statusBox) return;
+
   statusBox.textContent = message;
   statusBox.className = `form-status ${type}`;
-  statusBox.scrollIntoView({ behavior: "smooth", block: "center" });
+  statusBox.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+function camelToSnake(value) {
+  return value
+    .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+    .replace(/-/g, "_")
+    .toLowerCase();
 }
 
 if (form) {
@@ -50,41 +74,74 @@ if (form) {
     if (!form.reportValidity()) return;
 
     const honeypot = form.querySelector('[name="website"]');
-    if (honeypot && honeypot.value) return;
 
-    if (!GOOGLE_SCRIPT_URL.startsWith("https://script.google.com/")) {
-      showStatus("The research form has not been connected to Google Sheets yet. Add your Apps Script Web App URL in script.js.", "error");
+    if (honeypot && honeypot.value) {
       return;
     }
 
     const submitButton = form.querySelector('button[type="submit"]');
+
     submitButton.disabled = true;
     submitButton.textContent = "Sending…";
 
-    const formData = new FormData(form);
-    const selectedFeatures = [...form.querySelectorAll('input[name="features"]:checked')]
-      .map((input) => input.value)
-      .join(", ");
-
-    formData.delete("features");
-    formData.append("features", selectedFeatures);
-    formData.append("source", "naviquo.com research form");
-    formData.append("submittedAtBrowser", new Date().toISOString());
-
     try {
-      /* no-cors is required for the simple Google Apps Script endpoint.
-         A successful network submission returns an opaque response. */
-      await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: formData
-      });
+      const formData = new FormData(form);
+      const responseData = {};
+
+      for (const [name, value] of formData.entries()) {
+        if (
+          name === "website" ||
+          name === "features" ||
+          name === "researchConsent" ||
+          name === "betaTester" ||
+          name === "marketingConsent"
+        ) {
+          continue;
+        }
+
+        responseData[camelToSnake(name)] =
+          typeof value === "string" ? value.trim() : value;
+      }
+
+      responseData.features = [
+        ...form.querySelectorAll('input[name="features"]:checked')
+      ].map((input) => input.value);
+
+      responseData.research_consent = Boolean(
+        form.querySelector('[name="researchConsent"]')?.checked
+      );
+
+      responseData.beta_tester = Boolean(
+        form.querySelector('[name="betaTester"]')?.checked
+      );
+
+      responseData.marketing_consent = Boolean(
+        form.querySelector('[name="marketingConsent"]')?.checked
+      );
+
+      responseData.submitted_from = "naviquo.com research form";
+
+      const { error } = await supabaseClient
+        .from("research_responses")
+        .insert([responseData]);
+
+      if (error) {
+        throw error;
+      }
 
       form.reset();
-      showStatus("Thank you — your feedback has been sent. You are helping shape what Naviquo becomes.", "success");
+
+      showStatus(
+        "Thank you — your feedback has been sent. You are helping shape what Naviquo becomes.",
+        "success"
+      );
     } catch (error) {
-      console.error(error);
-      showStatus("Your response could not be sent. Please check your connection and try again.", "error");
+      console.error("Survey submission failed:", error);
+
+      showStatus(
+        "Your response could not be sent. Please check your connection and try again.",
+        "error"
+      );
     } finally {
       submitButton.disabled = false;
       submitButton.textContent = "Send my feedback";
